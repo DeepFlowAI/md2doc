@@ -1,5 +1,7 @@
 # md2doc
 
+![md2doc](docs/md2doc.jpeg)
+
 纯前端的 Markdown 转 Word/PDF 工具，支持多种可切换、可编辑的样式模板，所见即所得。
 
 ## 功能特性
