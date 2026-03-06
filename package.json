@@ -17,7 +17,10 @@
     "docx": "^9.4.1",
     "zustand": "^5.0.3",
     "lucide-react": "^0.474.0",
-    "file-saver": "^2.0.5"
+    "file-saver": "^2.0.5",
+    "mermaid": "^11.12.3",
+    "@vscode/markdown-it-katex": "^1.1.2",
+    "katex": "^0.16.21"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

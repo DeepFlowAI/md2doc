@@ -4,39 +4,72 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>md2doc - 纯前端 Markdown 转 Word/PDF 工具，所见即所得</title>
-    <meta name="description" content="md2doc 是纯前端 Markdown 转 Word/PDF 工具，无需后端，数据本地处理更安全。支持多种样式模板、实时预览、一键导出 .docx 和 .pdf，支持自定义字体、标题、表格、代码块等样式。" />
-    <meta name="keywords" content="Markdown, Word, PDF, 文档转换, 纯前端, 在线工具, docx, 导出, 样式模板" />
+    <meta name="theme-color" content="#3b82f6" />
+    <link rel="canonical" href="https://md2doc.deepflow.cc/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://md2doc.deepflow.cc/" />
+    <link rel="alternate" hreflang="en" href="https://md2doc.deepflow.cc/" />
+    <link rel="alternate" hreflang="x-default" href="https://md2doc.deepflow.cc/" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0CIslj3dQfLUYjg+IM1GBRvo1JMn/EfKBGqmY0KL5sgtEbBMk2JFoAP9pY+DA" crossorigin="anonymous" />
+
+    <title>md2doc - 纯前端 Markdown 转 Word/PDF 工具 | Free Online Markdown to Word/PDF Converter</title>
+    <meta name="description" content="md2doc 是纯前端 Markdown 转 Word/PDF 工具，无需后端，数据本地处理更安全。支持多种样式模板、实时预览、一键导出 .docx 和 .pdf，支持自定义字体、标题、表格、代码块等样式。Free online Markdown to Word/PDF converter, no backend required, privacy-first." />
+    <meta name="keywords" content="Markdown, Word, PDF, 文档转换, 纯前端, 在线工具, docx, 导出, 样式模板, markdown to word, markdown to pdf, markdown converter, online document converter, WYSIWYG, free tool, privacy, no upload" />
     <meta name="author" content="DeepFlowAI" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="md2doc - 纯前端 Markdown 转 Word/PDF 工具" />
-    <meta property="og:description" content="纯前端实现，数据本地处理，支持多种样式模板，一键导出 Word 和 PDF，所见即所得。" />
-    <meta property="og:url" content="https://github.com/DeepFlowAI/md2doc" />
+    <meta property="og:site_name" content="md2doc" />
+    <meta property="og:title" content="md2doc - 纯前端 Markdown 转 Word/PDF 工具 | Free Markdown to Word/PDF" />
+    <meta property="og:description" content="纯前端实现，数据本地处理，支持多种样式模板，一键导出 Word 和 PDF，所见即所得。Pure frontend Markdown to Word/PDF converter with customizable style templates." />
+    <meta property="og:url" content="https://md2doc.deepflow.cc/" />
+    <meta property="og:image" content="https://md2doc.deepflow.cc/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="md2doc - Markdown to Word/PDF Converter" />
     <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="md2doc - 纯前端 Markdown 转 Word/PDF 工具" />
-    <meta name="twitter:description" content="纯前端实现，数据本地处理，支持多种样式模板，一键导出 Word 和 PDF。" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="md2doc - Markdown to Word/PDF Converter" />
+    <meta name="twitter:description" content="Free online Markdown to Word/PDF converter. Pure frontend, no upload, privacy-first. Customizable style templates with live preview." />
+    <meta name="twitter:image" content="https://md2doc.deepflow.cc/og-image.png" />
+    <meta name="twitter:image:alt" content="md2doc - Markdown to Word/PDF Converter" />
+
     <!-- JSON-LD for AI / Search -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "md2doc",
-      "description": "纯前端 Markdown 转 Word/PDF 工具，支持多种可切换、可编辑的样式模板，所见即所得。无后端，数据本地，安全可靠。",
-      "url": "https://github.com/DeepFlowAI/md2doc",
+      "alternateName": "Markdown to Word/PDF Converter",
+      "description": "纯前端 Markdown 转 Word/PDF 工具，支持多种可切换、可编辑的样式模板，所见即所得。无后端，数据本地，安全可靠。A free, privacy-first online tool that converts Markdown to Word (.docx) and PDF with customizable style templates.",
+      "url": "https://md2doc.deepflow.cc/",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Web Browser",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "inLanguage": ["zh-CN", "en"],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "DeepFlowAI",
+        "url": "https://github.com/DeepFlowAI"
+      },
       "featureList": [
-        "Markdown 编辑与实时预览",
-        "导出 Word (.docx) 和 PDF",
-        "多种预设样式模板（默认、学术论文、技术文档）",
-        "自定义模板（字体、字号、颜色、标题、表格、代码块等）",
-        "纯前端实现，数据本地处理，无需上传"
-      ]
+        "Markdown 编辑与实时预览 / Markdown editing with live preview",
+        "导出 Word (.docx) 和 PDF / Export to Word (.docx) and PDF",
+        "多种预设样式模板（默认、学术论文、技术文档）/ Multiple preset style templates (Default, Academic, Technical)",
+        "自定义模板（字体、字号、颜色、标题、表格、代码块等）/ Custom templates (font, size, color, headings, tables, code blocks, etc.)",
+        "纯前端实现，数据本地处理，无需上传 / Pure frontend, local data processing, no upload required",
+        "中英文界面切换 / Chinese & English interface"
+      ],
+      "screenshot": "https://md2doc.deepflow.cc/og-image.png",
+      "softwareVersion": "1.0",
+      "license": "https://opensource.org/licenses/Apache-2.0"
     }
     </script>
   </head>

@@ -71,7 +71,7 @@ export const defaultTemplate: Template = {
     table: { borderColor: '#cccccc', borderMode: 'all', headerBg: '#f2f2f2', headerBold: true, headerColor: '#000000' },
     code: { fontFamily: 'Consolas, Monaco, "Courier New", monospace', fontSize: 11, bgColor: '#f5f5f5', border: true },
     separator: { lineType: 'solid', color: '#cccccc', thickness: 1 },
-    pageMargin: 25,
+    pageMargin: 20,
     themeColor: '#0066cc',
   },
 }

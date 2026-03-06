@@ -6,6 +6,7 @@ export interface Messages {
   }
   editor: {
     title: string
+    upload: string
     paste: string
     clear: string
     placeholder: string
@@ -86,6 +87,7 @@ const zh: Messages = {
   },
   editor: {
     title: 'Markdown 编辑',
+    upload: '上传 MD 文件',
     paste: '粘贴',
     clear: '清除',
     placeholder: '在此粘贴或输入 Markdown...',
@@ -170,13 +172,54 @@ const zh: Messages = {
 - **样式模板系统**：内置默认、学术论文、技术文档三种预设模板，支持切换和实时预览
 - **自定义模板**：可修改样式配置，自定义模板自动保存到本地
 - **所见即所得**：预览区以纸张形式展示，带缩放控制
+- **Mermaid 图表**：支持流程图、时序图、甘特图等多种图表
+- **LaTeX 数学公式**：支持行内公式与块级公式渲染
 
 ### 代码示例
 
-\`\`\`bash
-npm install
-npm run dev
+\`\`\`python
+from dataclasses import dataclass, field
+
+
+@dataclass
+class Task:
+    title: str
+    done: bool = False
+    tags: list[str] = field(default_factory=list)
+
+    def toggle(self):
+        self.done = not self.done
+        return self
+
+
+tasks = [Task("Write README", tags=["docs"]), Task("Fix bug", tags=["urgent"])]
+active = [t for t in tasks if not t.done]
+print(f"Pending: {len(active)}/{len(tasks)}")
 \`\`\`
+
+### Mermaid 流程图
+
+\`\`\`mermaid
+graph TD
+    A[输入 Markdown] --> B[解析渲染]
+    B --> C{选择导出格式}
+    C -->|Word| D[导出 .docx]
+    C -->|PDF| E[导出 .pdf]
+\`\`\`
+
+### LaTeX 数学公式
+
+行内公式：质能方程 $E = mc^2$，欧拉公式 $e^{i\\pi} + 1 = 0$
+
+块级公式：
+
+$$
+\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}
+$$
+
+$$
+\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}
+$$
 
 ## 技术栈
 
@@ -185,6 +228,8 @@ npm run dev
 | React 19 + TypeScript | 前端框架 |
 | Vite 6 | 构建工具 |
 | markdown-it + highlight.js | Markdown 解析与代码高亮 |
+| Mermaid | 图表渲染 |
+| KaTeX | 数学公式渲染 |
 | docx | Word 导出 |
 | html2pdf.js | PDF 导出 |
 
@@ -202,6 +247,7 @@ const en: Messages = {
   },
   editor: {
     title: 'Markdown Editor',
+    upload: 'Upload MD File',
     paste: 'Paste',
     clear: 'Clear',
     placeholder: 'Paste or type Markdown here...',
@@ -286,13 +332,54 @@ A pure front-end Markdown to Word/PDF tool with switchable and editable style te
 - **Style Template System**: Built-in Default, Academic, and Technical presets with real-time preview
 - **Custom Templates**: Modify style settings; custom templates are auto-saved locally
 - **WYSIWYG**: Preview area displayed as a paper page with zoom control
+- **Mermaid Diagrams**: Supports flowcharts, sequence diagrams, Gantt charts, and more
+- **LaTeX Math**: Supports inline and block math formula rendering
 
 ### Code Example
 
-\`\`\`bash
-npm install
-npm run dev
+\`\`\`python
+from dataclasses import dataclass, field
+
+
+@dataclass
+class Task:
+    title: str
+    done: bool = False
+    tags: list[str] = field(default_factory=list)
+
+    def toggle(self):
+        self.done = not self.done
+        return self
+
+
+tasks = [Task("Write README", tags=["docs"]), Task("Fix bug", tags=["urgent"])]
+active = [t for t in tasks if not t.done]
+print(f"Pending: {len(active)}/{len(tasks)}")
 \`\`\`
+
+### Mermaid Flowchart
+
+\`\`\`mermaid
+graph TD
+    A[Input Markdown] --> B[Parse & Render]
+    B --> C{Choose Format}
+    C -->|Word| D[Export .docx]
+    C -->|PDF| E[Export .pdf]
+\`\`\`
+
+### LaTeX Math
+
+Inline: Mass-energy equivalence $E = mc^2$, Euler's formula $e^{i\\pi} + 1 = 0$
+
+Block formulas:
+
+$$
+\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}
+$$
+
+$$
+\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}
+$$
 
 ## Tech Stack
 
@@ -301,6 +388,8 @@ npm run dev
 | React 19 + TypeScript | Frontend Framework |
 | Vite 6 | Build Tool |
 | markdown-it + highlight.js | Markdown Parsing & Highlighting |
+| Mermaid | Diagram Rendering |
+| KaTeX | Math Formula Rendering |
 | docx | Word Export |
 | html2pdf.js | PDF Export |
 

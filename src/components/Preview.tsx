@@ -1,19 +1,54 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import { useAppStore } from '../store'
 import { renderMarkdown } from '../utils/markdown'
 import { generatePreviewCSS } from '../utils/styles'
 import { exportToWord, exportToPDF } from '../utils/export'
 import { Eye, Minus, Plus, Download } from 'lucide-react'
 import { useI18n } from '../i18n'
+import mermaid from 'mermaid'
+
+mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' })
 
 export default function Preview() {
   const { markdown, currentTemplate, zoom, setZoom } = useAppStore()
   const s = currentTemplate.styles
   const [exporting, setExporting] = useState<string | null>(null)
   const { t } = useI18n()
+  const previewRef = useRef<HTMLDivElement>(null)
 
   const html = useMemo(() => renderMarkdown(markdown), [markdown])
   const css = useMemo(() => generatePreviewCSS(s), [s])
+
+  const mermaidCacheRef = useRef<Map<string, string>>(new Map())
+
+  const renderMermaidDiagrams = useCallback(async (container: HTMLElement) => {
+    const nodes = container.querySelectorAll<HTMLElement>('.mermaid')
+    if (nodes.length === 0) return
+    const cache = mermaidCacheRef.current
+    for (const node of nodes) {
+      if (node.querySelector('svg')) continue
+      const code = node.textContent?.trim() || ''
+      if (!code) continue
+      if (cache.has(code)) {
+        node.innerHTML = cache.get(code)!
+        continue
+      }
+      const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`
+      try {
+        const { svg } = await mermaid.render(id, code)
+        cache.set(code, svg)
+        node.innerHTML = svg
+      } catch {
+        node.innerHTML = `<pre class="mermaid-error" style="color:#e53e3e;font-size:12px;padding:8px;">[Mermaid] Render error</pre>`
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (previewRef.current) {
+      renderMermaidDiagrams(previewRef.current)
+    }
+  }, [html, css, renderMermaidDiagrams])
 
   const handleExportWord = async () => {
     setExporting('word')
@@ -76,8 +111,8 @@ export default function Preview() {
           </div>
         </div>
       </div>
-      <div className="flex-1 min-w-0 overflow-auto p-6 min-h-0">
-        <div className="flex justify-center min-h-full">
+      <div className="flex-1 min-w-0 overflow-auto p-2 min-h-0">
+        <div className="flex justify-center min-h-full pt-2">
           <div
             className="bg-white shadow-lg"
             style={{
@@ -88,6 +123,7 @@ export default function Preview() {
           >
             <style>{css}</style>
             <div
+              ref={previewRef}
               className="preview-content"
               dangerouslySetInnerHTML={{ __html: html }}
             />

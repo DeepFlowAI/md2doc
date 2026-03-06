@@ -131,5 +131,23 @@ export function generatePreviewCSS(styles: TemplateStyles): string {
     .preview-content del {
       text-decoration: line-through;
     }
+    .preview-content .mermaid {
+      display: flex;
+      justify-content: center;
+      margin: 1em 0;
+      overflow-x: auto;
+    }
+    .preview-content .mermaid svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .preview-content .katex-display {
+      margin: 1em 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    .preview-content .katex {
+      font-size: 1.1em;
+    }
   `
 }

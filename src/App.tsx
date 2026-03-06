@@ -8,13 +8,13 @@ export default function App() {
     <div className="flex flex-col h-screen bg-gray-50">
       <TopBar />
       <div className="flex flex-1 min-h-0">
-        <div className="w-[300px] shrink-0 overflow-hidden">
+        <div className="w-[260px] shrink-0 overflow-hidden">
           <StylePanel />
         </div>
-        <div className="flex-1 min-w-0 border-r border-gray-200">
+        <div className="flex-[2] min-w-0 border-r border-gray-200">
           <Editor />
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="flex-[3] min-w-0">
           <Preview />
         </div>
       </div>

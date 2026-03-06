@@ -1,6 +1,21 @@
 import { TemplateStyles } from '../templates'
 import { renderMarkdown } from './markdown'
 import { generatePreviewCSS } from './styles'
+import mermaid from 'mermaid'
+
+async function renderMermaidInContainer(container: HTMLElement) {
+  const nodes = container.querySelectorAll<HTMLElement>('.mermaid')
+  for (const node of nodes) {
+    const code = node.textContent || ''
+    const id = `mermaid-export-${Math.random().toString(36).slice(2, 10)}`
+    try {
+      const { svg } = await mermaid.render(id, code)
+      node.innerHTML = svg
+    } catch {
+      node.innerHTML = `<pre style="color:#e53e3e;">[Mermaid] Render error</pre>`
+    }
+  }
+}
 
 export async function exportToPDF(markdown: string, styles: TemplateStyles, filename = 'document') {
   const html = renderMarkdown(markdown)
@@ -13,6 +28,8 @@ export async function exportToPDF(markdown: string, styles: TemplateStyles, file
   container.style.top = '0'
   container.style.width = '210mm'
   document.body.appendChild(container)
+
+  await renderMermaidInContainer(container)
 
   try {
     const html2pdf = (await import('html2pdf.js')).default
@@ -62,8 +79,11 @@ export async function exportToWord(markdown: string, styles: TemplateStyles, fil
 
   let inCodeBlock = false
   let codeContent: string[] = []
+  let codeBlockLang = ''
   let inTable = false
   let tableRows: string[][] = []
+  let inMathBlock = false
+  let mathContent: string[] = []
 
   const alignMap: Record<string, typeof AlignmentType[keyof typeof AlignmentType]> = {
     left: AlignmentType.LEFT,
@@ -71,9 +91,11 @@ export async function exportToWord(markdown: string, styles: TemplateStyles, fil
     right: AlignmentType.RIGHT,
   }
 
+  const baseFont = styles.fontFamily.split(',')[0].trim().replace(/"/g, '')
+
   function createTextRuns(text: string, baseOpts: Record<string, unknown> = {}): (typeof TextRun.prototype)[] {
     const runs: (typeof TextRun.prototype)[] = []
-    const regex = /(\*\*\*.+?\*\*\*|\*\*.+?\*\*|\*.+?\*|~~.+?~~|`.+?`|\[.+?\]\(.+?\))/g
+    const regex = /(\*\*\*.+?\*\*\*|\*\*.+?\*\*|\*.+?\*|~~.+?~~|`.+?`|\[.+?\]\(.+?\)|\$\$.+?\$\$|\$[^$]+?\$)/g
     let lastIndex = 0
     let match
 
@@ -84,6 +106,20 @@ export async function exportToWord(markdown: string, styles: TemplateStyles, fil
       const m = match[0]
       if (m.startsWith('***') && m.endsWith('***')) {
         runs.push(new TextRun({ text: m.slice(3, -3), bold: true, italics: true, ...baseOpts } as any))
+      } else if (m.startsWith('$$') && m.endsWith('$$')) {
+        runs.push(new TextRun({
+          text: m.slice(2, -2),
+          font: 'Cambria Math',
+          italics: true,
+          ...baseOpts,
+        } as any))
+      } else if (m.startsWith('$') && m.endsWith('$')) {
+        runs.push(new TextRun({
+          text: m.slice(1, -1),
+          font: 'Cambria Math',
+          italics: true,
+          ...baseOpts,
+        } as any))
       } else if (m.startsWith('**') && m.endsWith('**')) {
         runs.push(new TextRun({ text: m.slice(2, -2), bold: true, ...baseOpts } as any))
       } else if (m.startsWith('*') && m.endsWith('*')) {
@@ -165,24 +201,44 @@ export async function exportToWord(markdown: string, styles: TemplateStyles, fil
   for (const line of lines) {
     if (line.startsWith('```')) {
       if (inCodeBlock) {
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: codeContent.join('\n'),
-                font: styles.code.fontFamily.split(',')[0].trim().replace(/"/g, ''),
-                size: ptToHalfPoints(styles.code.fontSize),
-              } as any),
-            ],
-            shading: { fill: hexToRGB(styles.code.bgColor) },
-            indent: { left: 360, right: 360 },
-            spacing: { before: 120, after: 120 },
-          }) as any
-        )
+        if (codeBlockLang === 'mermaid') {
+          children.push(
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              spacing: { before: 120, after: 120 },
+              children: [
+                new TextRun({
+                  text: '[Mermaid Diagram — visible in PDF/HTML export]',
+                  italics: true,
+                  color: '999999',
+                  font: baseFont,
+                  size: ptToHalfPoints(styles.fontSize),
+                } as any),
+              ],
+            }) as any
+          )
+        } else {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: codeContent.join('\n'),
+                  font: styles.code.fontFamily.split(',')[0].trim().replace(/"/g, ''),
+                  size: ptToHalfPoints(styles.code.fontSize),
+                } as any),
+              ],
+              shading: { fill: hexToRGB(styles.code.bgColor) },
+              indent: { left: 360, right: 360 },
+              spacing: { before: 120, after: 120 },
+            }) as any
+          )
+        }
         codeContent = []
+        codeBlockLang = ''
         inCodeBlock = false
       } else {
         if (inTable) flushTable()
+        codeBlockLang = line.replace('```', '').trim()
         inCodeBlock = true
       }
       continue
@@ -190,6 +246,37 @@ export async function exportToWord(markdown: string, styles: TemplateStyles, fil
 
     if (inCodeBlock) {
       codeContent.push(line)
+      continue
+    }
+
+    if (line.trim() === '$$') {
+      if (inMathBlock) {
+        children.push(
+          new Paragraph({
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 120, after: 120 },
+            children: [
+              new TextRun({
+                text: mathContent.join('\n'),
+                font: 'Cambria Math',
+                italics: true,
+                size: ptToHalfPoints(styles.fontSize),
+                color: hexToRGB(styles.fontColor),
+              } as any),
+            ],
+          }) as any
+        )
+        mathContent = []
+        inMathBlock = false
+      } else {
+        if (inTable) flushTable()
+        inMathBlock = true
+      }
+      continue
+    }
+
+    if (inMathBlock) {
+      mathContent.push(line)
       continue
     }
 
@@ -203,7 +290,6 @@ export async function exportToWord(markdown: string, styles: TemplateStyles, fil
       flushTable()
     }
 
-    const baseFont = styles.fontFamily.split(',')[0].trim().replace(/"/g, '')
     const baseRunOpts = {
       font: baseFont,
       size: ptToHalfPoints(styles.fontSize),
