@@ -19,6 +19,8 @@
 - **样式模板系统**：内置默认、学术论文、技术文档三种预设模板，支持切换和实时预览
 - **自定义模板**：可修改样式配置（字体、字号、颜色、行高、标题样式、表格样式等），自定义模板自动保存到本地
 - **所见即所得**：预览区以纸张形式展示，带缩放控制
+- **Mermaid 图表**：支持流程图、时序图、甘特图等多种图表渲染
+- **LaTeX 数学公式**：支持行内公式与块级公式渲染
 - **多语言支持**：支持中文 / 英文界面切换
 
 ### 样式自定义详解
@@ -58,6 +60,8 @@
 - Vite 6
 - Tailwind CSS 4
 - markdown-it + highlight.js（Markdown 解析与代码高亮）
+- Mermaid（图表渲染）
+- KaTeX（数学公式渲染）
 - docx（Word 导出）
 - html2pdf.js（PDF 导出）
 
@@ -116,6 +120,8 @@ A pure frontend Markdown to Word/PDF conversion tool with multiple switchable an
 - **Style Template System**: Three built-in presets (Default, Academic, Technical), switchable with live preview
 - **Custom Templates**: Modify style settings (font, size, color, line height, heading styles, table styles, etc.), custom templates are auto-saved locally
 - **WYSIWYG**: Preview area displays in paper format with zoom control
+- **Mermaid Diagrams**: Supports flowcharts, sequence diagrams, Gantt charts, and more
+- **LaTeX Math**: Supports inline and block math formula rendering
 - **Multi-language Support**: Chinese / English interface switching
 
 ### Style Customization
@@ -155,6 +161,8 @@ After selecting the "Custom" template, you can fine-tune the following settings 
 - Vite 6
 - Tailwind CSS 4
 - markdown-it + highlight.js (Markdown parsing & code highlighting)
+- Mermaid (diagram rendering)
+- KaTeX (math formula rendering)
 - docx (Word export)
 - html2pdf.js (PDF export)
 
