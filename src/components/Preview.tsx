@@ -4,11 +4,13 @@ import { renderMarkdown } from '../utils/markdown'
 import { generatePreviewCSS } from '../utils/styles'
 import { exportToWord, exportToPDF } from '../utils/export'
 import { Eye, Minus, Plus, Download } from 'lucide-react'
+import { useI18n } from '../i18n'
 
 export default function Preview() {
   const { markdown, currentTemplate, zoom, setZoom } = useAppStore()
   const s = currentTemplate.styles
   const [exporting, setExporting] = useState<string | null>(null)
+  const { t } = useI18n()
 
   const html = useMemo(() => renderMarkdown(markdown), [markdown])
   const css = useMemo(() => generatePreviewCSS(s), [s])
@@ -18,7 +20,7 @@ export default function Preview() {
     try {
       await exportToWord(markdown, s)
     } catch (e) {
-      alert('导出 Word 失败：' + (e as Error).message)
+      alert(t.preview.exportWordFail + (e as Error).message)
     } finally {
       setExporting(null)
     }
@@ -29,7 +31,7 @@ export default function Preview() {
     try {
       await exportToPDF(markdown, s)
     } catch (e) {
-      alert('导出 PDF 失败：' + (e as Error).message)
+      alert(t.preview.exportPDFFail + (e as Error).message)
     } finally {
       setExporting(null)
     }
@@ -40,7 +42,7 @@ export default function Preview() {
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 bg-gray-50 shrink-0">
         <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
           <Eye size={16} className="text-gray-500" />
-          实时预览
+          {t.preview.title}
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 bg-gray-100 rounded-md px-1 py-0.5">
@@ -57,19 +59,19 @@ export default function Preview() {
               onClick={handleExportWord}
               disabled={exporting !== null}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-md shadow-sm transition-colors disabled:opacity-50"
-              title="导出 Word"
+              title={t.preview.exportWord}
             >
               <Download size={14} />
-              {exporting === 'word' ? '导出中...' : 'Word'}
+              {exporting === 'word' ? t.preview.exporting : 'Word'}
             </button>
             <button
               onClick={handleExportPDF}
               disabled={exporting !== null}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-md shadow-sm transition-colors disabled:opacity-50"
-              title="导出 PDF"
+              title={t.preview.exportPDF}
             >
               <Download size={14} />
-              {exporting === 'pdf' ? '导出中...' : 'PDF'}
+              {exporting === 'pdf' ? t.preview.exporting : 'PDF'}
             </button>
           </div>
         </div>

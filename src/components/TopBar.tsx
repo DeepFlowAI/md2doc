@@ -1,18 +1,29 @@
-import { FileText } from 'lucide-react'
+import { FileText, Globe } from 'lucide-react'
+import { useI18n } from '../i18n'
 
 export default function TopBar() {
+  const { locale, t, setLocale } = useI18n()
+
   return (
     <header className="flex items-center justify-between h-12 px-5 bg-white border-b border-gray-200 shrink-0">
       <div className="flex items-center gap-2.5">
         <FileText size={20} className="text-gray-700" />
         <div className="flex items-baseline gap-2">
           <span className="text-base font-bold tracking-tight text-gray-800">md2doc</span>
-          <span className="text-xs text-gray-400">Markdown → Word / PDF</span>
+          <span className="text-xs text-gray-400">{t.topBar.subtitle}</span>
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <button
+          onClick={() => setLocale(locale === 'zh' ? 'en' : 'zh')}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-gray-100 text-gray-500 transition-colors text-xs font-medium"
+          title={locale === 'zh' ? 'Switch to English' : '切换为中文'}
+        >
+          <Globe size={15} />
+          {locale === 'zh' ? t.language.en : t.language.zh}
+        </button>
         <a
-          href="https://github.com"
+          href="https://github.com/DeepFlowAI/md2doc"
           target="_blank"
           rel="noopener noreferrer"
           className="p-1.5 rounded hover:bg-gray-100 text-gray-500 transition-colors"

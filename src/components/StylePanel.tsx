@@ -2,6 +2,7 @@ import { useAppStore } from '../store'
 import { FileText, GraduationCap, Code, Palette, ChevronDown, ChevronRight } from 'lucide-react'
 import { presetTemplates, getCustomTemplate } from '../templates'
 import { useState } from 'react'
+import { useI18n } from '../i18n'
 
 const iconMap: Record<string, React.ReactNode> = {
   'file-text': <FileText size={16} />,
@@ -76,25 +77,33 @@ export default function StylePanel() {
   const { currentTemplate, setCurrentTemplate, updateStyles, updateHeadingStyle, updateTableStyle, updateCodeStyle, updateSeparatorStyle } = useAppStore()
   const s = currentTemplate.styles
   const templates = [...presetTemplates, getCustomTemplate()]
+  const { t } = useI18n()
+
+  const templateNameMap: Record<string, string> = {
+    default: t.templates.default,
+    academic: t.templates.academic,
+    tech: t.templates.tech,
+    custom: t.templates.custom,
+  }
 
   return (
     <div className="flex flex-col h-full bg-white border-r border-gray-200">
       {/* Template Selection */}
       <div className="p-4 border-b border-gray-200">
-        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">模板选择</div>
+        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">{t.stylePanel.templateSelection}</div>
         <div className="grid grid-cols-2 gap-2">
-          {templates.map((t) => (
+          {templates.map((tpl) => (
             <button
-              key={t.id}
-              onClick={() => setCurrentTemplate(t.id)}
+              key={tpl.id}
+              onClick={() => setCurrentTemplate(tpl.id)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                currentTemplate.id === t.id
+                currentTemplate.id === tpl.id
                   ? 'bg-teal-600 text-white shadow-sm'
                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
               }`}
             >
-              {iconMap[t.icon]}
-              {t.name}
+              {iconMap[tpl.icon]}
+              {templateNameMap[tpl.id] || tpl.name}
             </button>
           ))}
         </div>
@@ -102,61 +111,61 @@ export default function StylePanel() {
 
       {/* Scrollable Config Area */}
       <div className="flex-1 overflow-y-auto">
-        <Section title="正文样式">
-          <Field label="字体">
+        <Section title={t.stylePanel.bodyStyle}>
+          <Field label={t.stylePanel.font}>
             <SmallSelect value={s.fontFamily} onChange={(v) => updateStyles({ fontFamily: v })}>
-              <option value='"Microsoft YaHei", "微软雅黑", sans-serif'>微软雅黑</option>
-              <option value='"Times New Roman", "SimSun", "宋体", serif'>Times New Roman</option>
-              <option value='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'>系统无衬线</option>
-              <option value='"SimSun", "宋体", serif'>宋体</option>
+              <option value='"Microsoft YaHei", "微软雅黑", sans-serif'>{t.stylePanel.fontMsYahei}</option>
+              <option value='"Times New Roman", "SimSun", "宋体", serif'>{t.stylePanel.fontTimesNewRoman}</option>
+              <option value='"Arial", "Helvetica Neue", Helvetica, sans-serif'>{t.stylePanel.fontArial}</option>
+              <option value='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'>{t.stylePanel.fontSystemSansSerif}</option>
+              <option value='"SimSun", "宋体", serif'>{t.stylePanel.fontSimsun}</option>
             </SmallSelect>
           </Field>
-          <Field label="字号">
+          <Field label={t.stylePanel.fontSize}>
             <SmallInput type="number" value={s.fontSize} onChange={(e) => updateStyles({ fontSize: Number(e.target.value) })} className="w-16" min={8} max={24} />
             <span className="text-xs text-gray-400">pt</span>
           </Field>
-          <Field label="颜色">
+          <Field label={t.stylePanel.color}>
             <ColorInput value={s.fontColor} onChange={(v) => updateStyles({ fontColor: v })} />
           </Field>
-          <Field label="行高">
+          <Field label={t.stylePanel.lineHeight}>
             <SmallInput type="number" value={s.lineHeight} onChange={(e) => updateStyles({ lineHeight: Number(e.target.value) })} className="w-16" min={1} max={3} step={0.1} />
           </Field>
-          <Field label="段落间距">
+          <Field label={t.stylePanel.paragraphSpacing}>
             <SmallInput type="number" value={s.paragraphSpacing} onChange={(e) => updateStyles({ paragraphSpacing: Number(e.target.value) })} className="w-16" min={0} max={36} step={1} />
             <span className="text-xs text-gray-400">pt</span>
           </Field>
         </Section>
 
         {(['h1', 'h2', 'h3', 'h4'] as const).map((level) => {
-          const labels = { h1: 'H1 标题', h2: 'H2 标题', h3: 'H3 标题', h4: 'H4 标题' }
           const hs = s[level]
           return (
-            <Section key={level} title={labels[level]} defaultOpen={level === 'h1'}>
-              <Field label="字号">
+            <Section key={level} title={`${level.toUpperCase()} ${t.stylePanel.heading}`} defaultOpen={level === 'h1'}>
+              <Field label={t.stylePanel.fontSize}>
                 <SmallInput type="number" value={hs.fontSize} onChange={(e) => updateHeadingStyle(level, { fontSize: Number(e.target.value) })} className="w-16" min={10} max={36} />
                 <span className="text-xs text-gray-400">pt</span>
               </Field>
-              <Field label="粗细">
+              <Field label={t.stylePanel.weight}>
                 <SmallSelect value={hs.bold ? 'bold' : 'normal'} onChange={(v) => updateHeadingStyle(level, { bold: v === 'bold' })}>
-                  <option value="bold">加粗</option>
-                  <option value="normal">正常</option>
+                  <option value="bold">{t.stylePanel.bold}</option>
+                  <option value="normal">{t.stylePanel.normal}</option>
                 </SmallSelect>
               </Field>
-              <Field label="颜色">
+              <Field label={t.stylePanel.color}>
                 <ColorInput value={hs.color} onChange={(v) => updateHeadingStyle(level, { color: v })} />
               </Field>
-              <Field label="对齐">
+              <Field label={t.stylePanel.align}>
                 <SmallSelect value={hs.align} onChange={(v) => updateHeadingStyle(level, { align: v })}>
-                  <option value="left">左对齐</option>
-                  <option value="center">居中</option>
-                  <option value="right">右对齐</option>
+                  <option value="left">{t.stylePanel.left}</option>
+                  <option value="center">{t.stylePanel.center}</option>
+                  <option value="right">{t.stylePanel.right}</option>
                 </SmallSelect>
               </Field>
-              <Field label="上间距">
+              <Field label={t.stylePanel.marginTop}>
                 <SmallInput type="number" value={hs.marginTop} onChange={(e) => updateHeadingStyle(level, { marginTop: Number(e.target.value) })} className="w-16" min={0} max={36} step={1} />
                 <span className="text-xs text-gray-400">pt</span>
               </Field>
-              <Field label="下间距">
+              <Field label={t.stylePanel.marginBottom}>
                 <SmallInput type="number" value={hs.marginBottom} onChange={(e) => updateHeadingStyle(level, { marginBottom: Number(e.target.value) })} className="w-16" min={0} max={36} step={1} />
                 <span className="text-xs text-gray-400">pt</span>
               </Field>
@@ -164,76 +173,76 @@ export default function StylePanel() {
           )
         })}
 
-        <Section title="表格样式" defaultOpen={false}>
-          <Field label="边框颜色">
+        <Section title={t.stylePanel.tableStyle} defaultOpen={false}>
+          <Field label={t.stylePanel.borderColor}>
             <ColorInput value={s.table.borderColor} onChange={(v) => updateTableStyle({ borderColor: v })} />
           </Field>
-          <Field label="边框模式">
+          <Field label={t.stylePanel.borderMode}>
             <SmallSelect value={s.table.borderMode} onChange={(v) => updateTableStyle({ borderMode: v })}>
-              <option value="all">全部边框</option>
-              <option value="horizontal">仅横线</option>
+              <option value="all">{t.stylePanel.allBorders}</option>
+              <option value="horizontal">{t.stylePanel.horizontalOnly}</option>
             </SmallSelect>
           </Field>
-          <Field label="表头背景">
+          <Field label={t.stylePanel.headerBg}>
             <ColorInput value={s.table.headerBg === 'transparent' ? '#ffffff' : s.table.headerBg} onChange={(v) => updateTableStyle({ headerBg: v })} />
           </Field>
-          <Field label="表头加粗">
+          <Field label={t.stylePanel.headerBold}>
             <SmallSelect value={s.table.headerBold ? 'yes' : 'no'} onChange={(v) => updateTableStyle({ headerBold: v === 'yes' })}>
-              <option value="yes">是</option>
-              <option value="no">否</option>
+              <option value="yes">{t.stylePanel.yes}</option>
+              <option value="no">{t.stylePanel.no}</option>
             </SmallSelect>
           </Field>
-          <Field label="表头颜色">
+          <Field label={t.stylePanel.headerColor}>
             <ColorInput value={s.table.headerColor} onChange={(v) => updateTableStyle({ headerColor: v })} />
           </Field>
         </Section>
 
-        <Section title="代码块" defaultOpen={false}>
-          <Field label="字体">
+        <Section title={t.stylePanel.codeBlock} defaultOpen={false}>
+          <Field label={t.stylePanel.codeFont}>
             <SmallSelect value={s.code.fontFamily} onChange={(v) => updateCodeStyle({ fontFamily: v })}>
               <option value='Consolas, Monaco, "Courier New", monospace'>Consolas</option>
               <option value='Monaco, Consolas, monospace'>Monaco</option>
               <option value='"Fira Code", Consolas, monospace'>Fira Code</option>
             </SmallSelect>
           </Field>
-          <Field label="字号">
+          <Field label={t.stylePanel.fontSize}>
             <SmallInput type="number" value={s.code.fontSize} onChange={(e) => updateCodeStyle({ fontSize: Number(e.target.value) })} className="w-16" min={8} max={18} />
             <span className="text-xs text-gray-400">pt</span>
           </Field>
-          <Field label="背景色">
+          <Field label={t.stylePanel.codeBgColor}>
             <ColorInput value={s.code.bgColor} onChange={(v) => updateCodeStyle({ bgColor: v })} />
           </Field>
-          <Field label="边框">
+          <Field label={t.stylePanel.codeBorder}>
             <SmallSelect value={s.code.border ? 'yes' : 'no'} onChange={(v) => updateCodeStyle({ border: v === 'yes' })}>
-              <option value="yes">有边框</option>
-              <option value="no">无边框</option>
+              <option value="yes">{t.stylePanel.withBorder}</option>
+              <option value="no">{t.stylePanel.noBorder}</option>
             </SmallSelect>
           </Field>
         </Section>
 
-        <Section title="分隔线" defaultOpen={false}>
-          <Field label="类型">
+        <Section title={t.stylePanel.separator} defaultOpen={false}>
+          <Field label={t.stylePanel.separatorType}>
             <SmallSelect value={s.separator.lineType} onChange={(v) => updateSeparatorStyle({ lineType: v })}>
-              <option value="solid">实线</option>
-              <option value="dashed">虚线</option>
-              <option value="dotted">点线</option>
+              <option value="solid">{t.stylePanel.solid}</option>
+              <option value="dashed">{t.stylePanel.dashed}</option>
+              <option value="dotted">{t.stylePanel.dotted}</option>
             </SmallSelect>
           </Field>
-          <Field label="颜色">
+          <Field label={t.stylePanel.color}>
             <ColorInput value={s.separator.color} onChange={(v) => updateSeparatorStyle({ color: v })} />
           </Field>
-          <Field label="粗细">
+          <Field label={t.stylePanel.thickness}>
             <SmallInput type="number" value={s.separator.thickness} onChange={(e) => updateSeparatorStyle({ thickness: Number(e.target.value) })} className="w-16" min={1} max={5} />
             <span className="text-xs text-gray-400">px</span>
           </Field>
         </Section>
 
-        <Section title="页面" defaultOpen={false}>
-          <Field label="页边距">
+        <Section title={t.stylePanel.page} defaultOpen={false}>
+          <Field label={t.stylePanel.pageMargin}>
             <SmallInput type="number" value={s.pageMargin} onChange={(e) => updateStyles({ pageMargin: Number(e.target.value) })} className="w-16" min={10} max={40} step={0.1} />
             <span className="text-xs text-gray-400">mm</span>
           </Field>
-          <Field label="主题色">
+          <Field label={t.stylePanel.themeColor}>
             <ColorInput value={s.themeColor} onChange={(v) => updateStyles({ themeColor: v })} />
           </Field>
         </Section>
